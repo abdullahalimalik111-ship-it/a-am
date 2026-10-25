@@ -15,6 +15,7 @@ import {
   generateInCharacterResponse,
   calculateSukunaDisposition,
 } from './src/utils/sukunaGameLogic.ts';
+import { JJK_CHARACTERS } from './src/utils/jjkCharacters.ts';
 
 dotenv.config();
 
@@ -50,16 +51,19 @@ async function startServer() {
   app.get('/api/health', (_req, res) => {
     res.json({
       status: 'ok',
-      character: 'Ryomen Sukuna',
+      characters: JJK_CHARACTERS.map((c) => ({ id: c.id, name: c.name })),
       hasApiKey: Boolean(apiKey),
     });
   });
 
   // Chat endpoint
   app.post('/api/chat', async (req, res) => {
-    const { messages = [], action } = req.body;
+    const { messages = [], action, characterId = 'sukuna' } = req.body;
+    const activeChar = JJK_CHARACTERS.find((c) => c.id === characterId) || JJK_CHARACTERS[0];
+    const systemInstruction = activeChar.systemInstruction || SUKUNA_INITIAL_PROMPT;
+
     const lastUserMsg = messages.filter((m: { role: string; content: string }) => m.role === 'user').slice(-1)[0];
-    const userPrompt = lastUserMsg?.content || action || 'Make your move, Sukuna.';
+    const userPrompt = lastUserMsg?.content || action || 'Make your move.';
 
     let reply = '';
     let techniqueTriggered: 'dismantle' | 'cleave' | 'fuga' | 'domain' | 'black_flash' | 'simple_domain' | null = null;
@@ -103,9 +107,20 @@ async function startServer() {
 
     // If Gemini was offline, throttled, or missing key, use high-fidelity fallback
     if (!reply.trim()) {
-      const fallbackResult = generateInCharacterResponse(userPrompt, messages);
-      reply = fallbackResult.reply;
-      techniqueTriggered = fallbackResult.techniqueTriggered;
+      if (characterId === 'gojo') {
+        reply = `*Gojo tips his sunglasses down, grinning cockily as a blue luminescence twists around his index finger.* "Is that all you've got? You know you can't touch me, right? That's what Infinity is for. Now then... should we try Cursed Technique Reversal: Red, or are you ready to bow out?"`;
+        techniqueTriggered = 'cleave';
+      } else if (characterId === 'toji') {
+        reply = `*Toji twirls the Inverted Spear of Heaven between calloused fingers, exhaling a quiet breath of smoke.* "Slow. Even a Grade 2 could see that trajectory. You sorcerers rely too much on your sparks and fancy words. One clean thrust to the vitals ends it."`;
+        techniqueTriggered = 'dismantle';
+      } else if (characterId === 'yuta') {
+        reply = `*Yuta draws his katana smoothly, a calm focus settling across his eyes as Rika's claws graze the dirt.* "I see your resolve. But I promised I wouldn't lose here. Rika... stay close."`;
+        techniqueTriggered = 'cleave';
+      } else {
+        const fallbackResult = generateInCharacterResponse(userPrompt, messages);
+        reply = fallbackResult.reply;
+        techniqueTriggered = fallbackResult.techniqueTriggered;
+      }
     } else {
       const detected = detectTechniqueInText(reply);
       techniqueTriggered = detected.technique;

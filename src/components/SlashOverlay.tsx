@@ -6,7 +6,7 @@
 import React from 'react';
 
 interface SlashOverlayProps {
-  activeType: 'dismantle' | 'cleave' | 'fuga' | 'domain' | null;
+  activeType: 'dismantle' | 'cleave' | 'fuga' | 'domain' | 'world_slash' | 'lightning' | 'heal' | null;
 }
 
 export const SlashOverlay: React.FC<SlashOverlayProps> = ({ activeType }) => {
@@ -18,7 +18,6 @@ export const SlashOverlay: React.FC<SlashOverlayProps> = ({ activeType }) => {
         className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center overflow-hidden animate-pulse"
         aria-hidden="true"
       >
-        {/* Thermonuclear fire shockwave bloom */}
         <div className="absolute inset-0 bg-radial from-amber-500/40 via-red-600/30 to-black/80 mix-blend-screen transition-opacity duration-700" />
         <div className="relative text-center">
           <span className="font-cinzel text-5xl md:text-7xl font-black text-amber-200 tracking-widest drop-shadow-[0_0_40px_rgba(249,115,22,1)]">
@@ -32,14 +31,62 @@ export const SlashOverlay: React.FC<SlashOverlayProps> = ({ activeType }) => {
     );
   }
 
-  // Dismantle, Cleave, or generic slashes
+  if (activeType === 'world_slash') {
+    return (
+      <div
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+        aria-hidden="true"
+      >
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+        {/* Spatial rift reality slice */}
+        <div className="absolute w-full h-1 bg-white shadow-[0_0_30px_#a855f7,0_0_60px_#ec4899] transform -rotate-12 scale-x-125" />
+        <div className="relative text-center">
+          <span className="font-cinzel text-4xl md:text-6xl font-black text-purple-200 tracking-widest drop-shadow-[0_0_50px_rgba(168,85,247,1)]">
+            世界を断つ斬撃
+          </span>
+          <p className="text-purple-300 font-mono tracking-widest text-sm uppercase mt-2">
+            World Cutting Slash • Space & Existence Severed
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (activeType === 'lightning') {
+    return (
+      <div
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+        aria-hidden="true"
+      >
+        <div className="absolute inset-0 bg-cyan-500/25 mix-blend-color-dodge animate-pulse" />
+        <span className="font-cinzel text-4xl md:text-6xl font-black text-cyan-200 tracking-widest drop-shadow-[0_0_40px_rgba(6,182,212,1)]">
+          神武解 • KAMUTOKE
+        </span>
+      </div>
+    );
+  }
+
+  if (activeType === 'heal') {
+    return (
+      <div
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+        aria-hidden="true"
+      >
+        <div className="absolute inset-0 bg-emerald-500/20 mix-blend-screen animate-pulse" />
+        <span className="font-cinzel text-3xl md:text-5xl font-black text-emerald-200 tracking-widest drop-shadow-[0_0_30px_rgba(16,185,129,0.8)]">
+          反転術式 • REVERSE CURSED RESTORATION
+        </span>
+      </div>
+    );
+  }
+
+  // Dismantle, Cleave, or standard slashes
   return (
     <div
       className="pointer-events-none fixed inset-0 z-50 overflow-hidden"
       aria-hidden="true"
     >
       <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-        {/* Dynamic diagonal slashes cutting across the screen */}
         <line
           x1="-10%"
           y1="25%"
