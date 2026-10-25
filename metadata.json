@@ -1,0 +1,8 @@
+{
+  "name": "Ryomen Sukuna: Shibuya Standoff",
+  "description": "Interactive AI combat roleplay with Ryomen Sukuna, King of Curses, amidst the scorched ruins and flames of Shibuya.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
